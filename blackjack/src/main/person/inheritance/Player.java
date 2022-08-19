@@ -1,9 +1,16 @@
 package main.person.inheritance;
 
-import main.person.Person;
-import main.util.exception.SystemException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Player extends Person{
+import main.card.Card;
+import main.person.Person;
+import main.util.constants.Constants;
+import main.util.exception.SystemException;
+import main.util.keyboard.Keyboard;
+import main.util.properties.MessageProperties;
+
+public class Player extends Person {
 	private int totalChip; //合計チップ
 	private int debt;//借チップ
 	private int bettingValue;//ベットした額
@@ -15,7 +22,6 @@ public class Player extends Person{
 		this.debt = 0;
 	}
 
-
 	/**
 	 * プレイヤー初期化メソッド
 	 * 手持ちのカードを無くし、合計、ベットを0、フラグを初期化
@@ -26,10 +32,19 @@ public class Player extends Person{
 	public void initialize() {
 		//Playerクラス担当者変数箇所
 		//ここから
+		bettingValue = 0;
+		canSurrender = true;
+		super.initialize();
+		if (totalChip < Constants.MAX_BET_VALUE) {
+			totalChip += Constants.DEPT_VALUE;
+			debt += Constants.DEPT_VALUE;
+		} else if (totalChip < Constants.REPAYMENT_BORDER && debt > Constants.DEPT_VALUE) {
+			totalChip -= Constants.DEPT_VALUE;
+			debt -= Constants.DEPT_VALUE;
+		}
 
 		//ここまで
 	}
-
 
 	/**
 	 * 状況確認メソッド
@@ -37,9 +52,40 @@ public class Player extends Person{
 	 * @throws SystemException
 	 */
 	@Override
-	public void checkStatus() throws SystemException{
+	public void checkStatus() throws SystemException {
 		//Playerクラス担当者変数箇所
 		//ここから
+		updateStatus();
+		StringBuilder sb = new StringBuilder();
+		List<Card> cl = new ArrayList<Card>();
+		cl = getHand();
+		for (Card c : cl) {
+			sb.append(c);
+			sb.append(" ");
+
+		}
+		String name = getName();
+		String ts = sb.toString();
+		boolean check = getIsBurst();
+		String d = null;
+		if (check == true) {
+			d = MessageProperties.getMessage("blackjack.burst");
+
+		} else {
+			boolean check2 = getIsBlackJack();
+			if (check2 == true) {
+				d = MessageProperties.getMessage("blackjack.blackjack");
+			} else {
+				int gt = getTotal();
+				d = String.valueOf(gt);
+
+			}
+		}
+		String value2 = String.valueOf(bettingValue);
+		String value3 = String.valueOf(totalChip);
+		String value4 = String.valueOf(debt);
+		System.out.println(
+				MessageProperties.getMessage("blackjack.msg.player.info" + name + ts + d + value2 + value3 + value4));
 
 		//ここまで
 	}
@@ -49,10 +95,33 @@ public class Player extends Person{
 	 * ベットした時点でtotalChipからベット額を差し引く
 	 * @throws SystemException
 	 */
-	public void bet() throws SystemException{
+	public void bet() throws SystemException {
 		//Playerクラス担当者変数箇所
 		//ここから
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.info.total.chip" + totalChip));
+		int a;
+		if (totalChip > Constants.MAX_BET_VALUE) {
+			a = Constants.MAX_BET_VALUE;
+			System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet" + a));
 
+		} else {
+			a = totalChip;
+			System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet" + a));
+		}
+		String name = getName();
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.turn" + name));
+		int b;
+		if (totalChip > Constants.MAX_BET_VALUE) {
+			b = Constants.MAX_BET_VALUE;
+
+		} else {
+			b = totalChip;
+			int x = Keyboard.getInt(Constants.MIN_BET_VALUE, b);
+
+		}
+		int x = Keyboard.getInt(Constants.MIN_BET_VALUE, b);
+		bettingValue = x;
+		totalChip -= x;
 		//ここまで
 	}
 
@@ -63,10 +132,26 @@ public class Player extends Person{
 	 * totalをConstants.BURSTにする
 	 * @throws SystemException
 	 */
-	public void surrender() throws SystemException{
+	public void surrender() throws SystemException {
 		//Playerクラス担当者変数箇所
 		//ここから
+		boolean check = getIsBurst();
+		boolean check2 = getIsStand();
+		if (check == false && check2 == false) {
+			if (canSurrender = true) {
+				System.out.println(MessageProperties.getMessage("blackjack.surrender"));
+				totalChip += bettingValue / 2;
+				bettingValue = 0;
+				setIsBurst(true);
+				setTotal(Constants.BURST);
+			} else {
+				System.out.println(MessageProperties.getMessage("blackjack.msg.player.cannot.surrender"));
 
+			}
+
+		} else {
+			throw new SystemException(MessageProperties.getMessage("blackjack.error.surrender"));
+		}
 		//ここまで
 	}
 
@@ -78,10 +163,9 @@ public class Player extends Person{
 	public void collect(int value) {
 		//Playerクラス担当者変数箇所
 		//ここから
-
+		totalChip += value;
 		//ここまで
 	}
-
 
 	public int getTotalChip() {
 		return this.totalChip;
