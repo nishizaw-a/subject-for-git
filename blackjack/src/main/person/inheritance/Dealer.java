@@ -1,9 +1,12 @@
 package main.person.inheritance;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import main.card.Card;
 import main.person.Person;
+import main.util.constants.Constants;
 import main.util.exception.SystemException;
 import main.util.properties.MessageProperties;
 
@@ -23,7 +26,8 @@ public class Dealer extends Person{
 	public void initialize() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		super.initialize();
+		createDeck();
 		//ここまで
 	}
 
@@ -36,10 +40,17 @@ public class Dealer extends Person{
 	public void checkStatus() throws SystemException{
 		//Dealerクラス担当者変数箇所
 		//ここから
+		super.updateStatus();
+		List<Card> list = super.getHand();
+		boolean check = super.getIsStand();
 
-		//ここまで
+		if(list.size() == 2 && super.getIsStand() == check) {
+			String name = getName();
+			String str = list.get(0).toString();
+			System.out.println(MessageProperties.getMessage("blackjack.msg.dealer.info.init", name, str));
+		}
 	}
-
+		//ここまで
 	/**
 	 * 山札作成メソッド
 	 * 新品のトランプを模倣し一番上から同柄の1~13の4種類、52枚を用意
@@ -47,9 +58,16 @@ public class Dealer extends Person{
 	private void createDeck() {
 		//Dealerクラス担当者変数箇所
 		//ここから
+		this.deck = new ArrayList<Card>();
 
-		//ここまで
+		for (int i = 0; i < Constants.SUIT_LIST.size(); i++) {
+			for(int j = 0; j < 13; j++) {
+				Card card = new Card(j, Constants.SUIT_LIST.get(i));
+				this.deck.add(card);
+			}
+		}
 	}
+	//ここまで
 
 	/**
 	 * 山札をシャフルするメソッド
@@ -58,7 +76,7 @@ public class Dealer extends Person{
 	public void shuffle() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		Collections.shuffle(this.deck);
 		//ここまで
 	}
 
@@ -71,7 +89,9 @@ public class Dealer extends Person{
 	public Card deal() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		Card card = this.deck.get(0);
+		deck.remove(card);
+		return card;
 		//ここまで
 	}
 }
