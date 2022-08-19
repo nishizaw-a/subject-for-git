@@ -69,7 +69,8 @@ public class BlackJack {
 	public void createPlayer() throws SystemException{
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		Dealer dealerIns = new Dealer();
+		this.dealer = dealerIns;
 		//ここまで
 
 		this.playerList = new ArrayList<Player>();
