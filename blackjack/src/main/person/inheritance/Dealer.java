@@ -10,10 +10,10 @@ import main.util.constants.Constants;
 import main.util.exception.SystemException;
 import main.util.properties.MessageProperties;
 
-public class Dealer extends Person{
+public class Dealer extends Person {
 	private List<Card> deck;//山札
 
-	public Dealer() throws SystemException{
+	public Dealer() throws SystemException {
 		super(MessageProperties.getMessage("blackjack.dealer.name"));
 	}
 
@@ -37,20 +37,21 @@ public class Dealer extends Person{
 	 * @throws SystemException
 	 */
 	@Override
-	public void checkStatus() throws SystemException{
+	public void checkStatus() throws SystemException {
 		//Dealerクラス担当者変数箇所
 		//ここから
 		super.updateStatus();
 		List<Card> list = super.getHand();
 		boolean check = super.getIsStand();
 
-		if(list.size() == 2 && super.getIsStand() == check) {
+		if (list.size() == 2 && super.getIsStand() == false) {
 			String name = getName();
 			String str = list.get(0).toString();
 			System.out.println(MessageProperties.getMessage("blackjack.msg.dealer.info.init", name, str));
 		}
 	}
-		//ここまで
+
+	//ここまで
 	/**
 	 * 山札作成メソッド
 	 * 新品のトランプを模倣し一番上から同柄の1~13の4種類、52枚を用意
@@ -61,7 +62,7 @@ public class Dealer extends Person{
 		this.deck = new ArrayList<Card>();
 
 		for (int i = 0; i < Constants.SUIT_LIST.size(); i++) {
-			for(int j = 0; j < 13; j++) {
+			for (int j = 0; j < 13; j++) {
 				Card card = new Card(j, Constants.SUIT_LIST.get(i));
 				this.deck.add(card);
 			}

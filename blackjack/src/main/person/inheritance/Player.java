@@ -35,10 +35,10 @@ public class Player extends Person {
 		bettingValue = 0;
 		canSurrender = true;
 		super.initialize();
-		if (totalChip < Constants.MAX_BET_VALUE) {
+		if (totalChip < Constants.MIN_BET_VALUE) {
 			totalChip += Constants.DEPT_VALUE;
 			debt += Constants.DEPT_VALUE;
-		} else if (totalChip < Constants.REPAYMENT_BORDER && debt > Constants.DEPT_VALUE) {
+		} else if (totalChip > Constants.REPAYMENT_BORDER && debt >= Constants.DEPT_VALUE) {
 			totalChip -= Constants.DEPT_VALUE;
 			debt -= Constants.DEPT_VALUE;
 		}
@@ -85,7 +85,7 @@ public class Player extends Person {
 		String value3 = String.valueOf(totalChip);
 		String value4 = String.valueOf(debt);
 		System.out.println(
-				MessageProperties.getMessage("blackjack.msg.player.info" + name + ts + d + value2 + value3 + value4));
+				MessageProperties.getMessage("blackjack.msg.player.info", name, ts, d, value2, value3, value4));
 
 		//ここまで
 	}
@@ -98,25 +98,24 @@ public class Player extends Person {
 	public void bet() throws SystemException {
 		//Playerクラス担当者変数箇所
 		//ここから
-		System.out.println(MessageProperties.getMessage("blackjack.msg.player.info.total.chip" + totalChip));
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.info.total.chip", totalChip));
 		int a;
 		if (totalChip > Constants.MAX_BET_VALUE) {
 			a = Constants.MAX_BET_VALUE;
-			System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet" + a));
+			System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet", Constants.MIN_BET_VALUE, a));
 
 		} else {
 			a = totalChip;
-			System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet" + a));
+			System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet", Constants.MIN_BET_VALUE, a));
 		}
 		String name = getName();
-		System.out.println(MessageProperties.getMessage("blackjack.msg.player.turn" + name));
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.turn", name));
 		int b;
 		if (totalChip > Constants.MAX_BET_VALUE) {
 			b = Constants.MAX_BET_VALUE;
 
 		} else {
 			b = totalChip;
-			int x = Keyboard.getInt(Constants.MIN_BET_VALUE, b);
 
 		}
 		int x = Keyboard.getInt(Constants.MIN_BET_VALUE, b);
