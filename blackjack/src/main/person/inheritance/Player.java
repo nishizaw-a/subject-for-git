@@ -132,7 +132,7 @@ public class Player extends Person{
 	public void collect(int value) {
 		//Playerクラス担当者変数箇所
 		//ここから
-
+		this.totalChip += value;
 		//ここまで
 	}
 
