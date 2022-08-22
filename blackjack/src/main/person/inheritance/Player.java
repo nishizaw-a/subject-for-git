@@ -107,7 +107,20 @@ public class Player extends Person{
 	public void surrender() throws SystemException{
 		//Playerクラス担当者変数箇所
 		//ここから
-
+		if(!this.getIsBurst() && !this.getIsStand()) {
+			if(this.canSurrender) {
+				System.out.println(MessageProperties.getMessage("blackjack.surrender"));
+				this.totalChip += this.bettingValue/2;
+				this.bettingValue = 0;
+				this.canSurrender = false;
+				this.setIsBurst(true);
+				this.setTotal( Constants.BURST);
+			}else {
+				System.out.println(MessageProperties.getMessage("blackjack.msg.player.cannot.surrender"));
+			}
+		}else {
+			throw new SystemException(MessageProperties.getMessage("blackjack.error.surrender"));
+		}
 		//ここまで
 	}
 
