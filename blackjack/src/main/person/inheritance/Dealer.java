@@ -1,16 +1,18 @@
 package main.person.inheritance;
 
+import java.util.Collections;
 import java.util.List;
 
 import main.card.Card;
 import main.person.Person;
+import main.util.constants.Constants;
 import main.util.exception.SystemException;
 import main.util.properties.MessageProperties;
 
-public class Dealer extends Person{
+public class Dealer extends Person {
 	private List<Card> deck;//山札
 
-	public Dealer() throws SystemException{
+	public Dealer() throws SystemException {
 		super(MessageProperties.getMessage("blackjack.dealer.name"));
 	}
 
@@ -23,6 +25,8 @@ public class Dealer extends Person{
 	public void initialize() {
 		//Dealerクラス担当者変数箇所
 		//ここから
+		super.initialize();
+		createDeck();
 
 		//ここまで
 	}
@@ -33,10 +37,18 @@ public class Dealer extends Person{
 	 * @throws SystemException
 	 */
 	@Override
-	public void checkStatus() throws SystemException{
+	public void checkStatus() throws SystemException {
 		//Dealerクラス担当者変数箇所
 		//ここから
+		super.updateStatus();
+		List<Card> list = super.getHand();
+		boolean boo = super.getIsStand();
+		if (list.size() == 2 && super.getIsStand() == boo) {
+			String str = super.getName();
+			String str2 = list.get(0).toString();
+			System.out.println(MessageProperties.getMessage("blackjack.msg.dealer.info.init", str, str2));
 
+		}
 		//ここまで
 	}
 
@@ -47,6 +59,11 @@ public class Dealer extends Person{
 	private void createDeck() {
 		//Dealerクラス担当者変数箇所
 		//ここから
+		List<Card> list = deck;
+		for (int i = 0; i < Constants.SUIT_LIST.size(); i++) {
+			Card card = new Card(i, Constants.SUIT_LIST.get(0));
+			list.add(card);
+		}
 
 		//ここまで
 	}
@@ -58,7 +75,7 @@ public class Dealer extends Person{
 	public void shuffle() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		Collections.shuffle(deck);
 		//ここまで
 	}
 
@@ -71,6 +88,9 @@ public class Dealer extends Person{
 	public Card deal() {
 		//Dealerクラス担当者変数箇所
 		//ここから
+		Card card = deck.get(0);
+		 deck.remove(card);
+		 return card;
 
 		//ここまで
 	}
