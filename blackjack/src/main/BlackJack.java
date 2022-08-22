@@ -250,7 +250,11 @@ public class BlackJack {
 		//プレイヤー担当、ディーラー担当の両方が編集する
 		//(意図的にコンフリクトを発生させコンフリクトを解消してマージする)
 		//ここから
-
+		this.gameNumber++;
+		String str = MessageProperties.getMessage("blackjack.continue", Constants.CONTINUE, Constants.EXIT);
+		System.out.println(str);
+		boolean bool = (Keyboard.getInt(Constants.CONTINUE, Constants.EXIT) == 1);
+		return bool;
 		//ここまで
 	}
 }
