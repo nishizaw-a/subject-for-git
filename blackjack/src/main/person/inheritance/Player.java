@@ -3,6 +3,7 @@ package main.person.inheritance;
 import main.person.Person;
 import main.util.constants.Constants;
 import main.util.exception.SystemException;
+import main.util.properties.MessageProperties;
 
 public class Player extends Person{
 	private int totalChip; //合計チップ
@@ -51,7 +52,22 @@ public class Player extends Person{
 	public void checkStatus() throws SystemException{
 		//Playerクラス担当者変数箇所
 		//ここから
+		this.updateStatus();
+		StringBuilder sb = new StringBuilder();
 
+		for(Card card : this.getHand()) {
+			sb.append(card).append(" ");
+		}
+
+		System.out.println(MessageProperties.getMessage(
+				"blackjack.msg.player.info",
+				this.getName(),
+				sb.toString(),
+				this.getIsBurst() ? MessageProperties.getMessage("blackjack.burst") : this.getIsBlackJack() ? MessageProperties.getMessage("blackjack.burst") : String.valueOf(this.getTotal()),
+				String.valueOf(this.bettingValue),
+				String.valueOf(this.totalChip),
+				String.valueOf(this.debt)
+		));
 		//ここまで
 	}
 
