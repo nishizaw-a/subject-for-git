@@ -1,5 +1,6 @@
 package main.person.inheritance;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class Dealer extends Person{
 	public void shuffle() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		Collections.shuffle(this.deck);
 		//ここまで
 	}
 
