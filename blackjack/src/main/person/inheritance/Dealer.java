@@ -23,7 +23,8 @@ public class Dealer extends Person{
 	public void initialize() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		super.initialize();
+		this.createDeck();
 		//ここまで
 	}
 
