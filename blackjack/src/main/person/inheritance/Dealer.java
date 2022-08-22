@@ -1,9 +1,11 @@
 package main.person.inheritance;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import main.card.Card;
 import main.person.Person;
+import main.util.constants.Constants;
 import main.util.exception.SystemException;
 import main.util.properties.MessageProperties;
 
@@ -52,7 +54,12 @@ public class Dealer extends Person{
 	private void createDeck() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		this.deck = new LinkedList<Card>();
+		for(String suit : Constants.SUIT_LIST) {
+			for(int i = 1; i <= 13; i++) {
+				this.deck.add(new Card(i, suit));
+			}
+		}
 		//ここまで
 	}
 
