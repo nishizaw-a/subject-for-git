@@ -1,8 +1,10 @@
 package main.person.inheritance;
 
+import main.card.Card;
 import main.person.Person;
 import main.util.constants.Constants;
 import main.util.exception.SystemException;
+import main.util.keyboard.Keyboard;
 import main.util.properties.MessageProperties;
 
 public class Player extends Person{
@@ -79,7 +81,19 @@ public class Player extends Person{
 	public void bet() throws SystemException{
 		//Playerクラス担当者変数箇所
 		//ここから
-
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.info.total.chip", this.totalChip));
+		System.out.println(MessageProperties.getMessage(
+				"blackjack.msg.player.bet",
+				Constants.MIN_BET_VALUE,
+				((Constants.MAX_BET_VALUE < this.totalChip) ? Constants.MAX_BET_VALUE : this.totalChip)
+		));
+		System.out.print(MessageProperties.getMessage("blackjack.msg.player.turn", this.getName()));
+		int value = Keyboard.getInt(
+				Constants.MIN_BET_VALUE,
+				(Constants.MAX_BET_VALUE < this.totalChip) ? Constants.MAX_BET_VALUE : this.totalChip
+				);
+		this.bettingValue = value;
+		this.totalChip -= value;
 		//ここまで
 	}
 
