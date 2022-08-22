@@ -37,7 +37,11 @@ public class Dealer extends Person{
 	public void checkStatus() throws SystemException{
 		//Dealerクラス担当者変数箇所
 		//ここから
+		this.updateStatus();
 
+		if(!(this.getHand().size() > 2) && !(this.getIsStand())) {
+			System.out.println(MessageProperties.getMessage("blackjack.msg.dealer.info.init", this.getName(), this.getHand().get(0).toString()));
+		}
 		//ここまで
 	}
 
