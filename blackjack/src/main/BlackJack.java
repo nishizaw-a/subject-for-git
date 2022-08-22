@@ -22,7 +22,7 @@ public class BlackJack {
 	public static void main(String[] args) {
 		try {
 			BlackJack bj = new BlackJack();
-			while(true) {
+			while (true) {
 				System.out.println(MessageProperties.getMessage("blackjack.start"));
 				//準備
 				bj.initialize();
@@ -37,25 +37,27 @@ public class BlackJack {
 				//結果表示
 				bj.printResult();
 				//継続選択
-				if(!bj.hasContinued()) {
+				if (!bj.hasContinued()) {
 					System.out.println(MessageProperties.getMessage("blackjack.end"));
-					for(Player player : bj.playerList) {
+					for (Player player : bj.playerList) {
 						int result = player.getTotalChip() - player.getDept() - Constants.INITIAL_CHIP_TOTAL;
-						System.out.println(MessageProperties.getMessage("blackjack.result.chip", player.getName(), (result > 0 ? "+" : result < 0 ? "-" : "+-")+(result)));
+						System.out.println(MessageProperties.getMessage("blackjack.result.chip", player.getName(),
+								(result > 0 ? "+" : result < 0 ? "-" : "+-") + (result)));
 					}
 					break;
 				}
 			}
-		}catch(SystemException e) {
+		} catch (SystemException e) {
 			System.out.println(e.getMessage());
 		}
 	}
+
 	/**
 	 * ブラックジャックを表すオブジェクトのコンストラクタ
 	 * ゲーム開始時はプレイヤーがいる前提で始めるためcreatePlayerメソッドでディーラー、プレイヤーを作成
 	 * @throws SystemException
 	 */
-	public BlackJack() throws SystemException{
+	public BlackJack() throws SystemException {
 		this.gameNumber = 1;
 		this.createPlayer();
 	}
@@ -66,24 +68,24 @@ public class BlackJack {
 	 * プレイヤー:入力した人数
 	 * @throws SystemException
 	 */
-	public void createPlayer() throws SystemException{
+	public void createPlayer() throws SystemException {
 		//Dealerクラス担当者変数箇所
 		//ここから
-Dealer dealer=new Dealer();
-this.dealer=dealer;
+		Dealer dealer = new Dealer();
+		this.dealer = dealer;
 		//ここまで
 
 		this.playerList = new ArrayList<Player>();
 
 		System.out.println(MessageProperties.getMessage("blackjack.input", Constants.MIN_PLAYER, Constants.MAX_PLAYER));
 
-		int number = Keyboard.getInt(Constants.MIN_PLAYER,Constants.MAX_PLAYER);
+		int number = Keyboard.getInt(Constants.MIN_PLAYER, Constants.MAX_PLAYER);
 
-		for(int i = 0; i < number ; i++) {
-		//Playerクラス担当者変数箇所
-		//ここから
-
-		//ここまで
+		for (int i = 0; i < number; i++) {
+			//Playerクラス担当者変数箇所
+			//ここから
+			playerList.add(new Player("player" + (i + 1), Constants.INITIAL_CHIP_TOTAL));
+			//ここまで
 		}
 	}
 
@@ -94,12 +96,12 @@ this.dealer=dealer;
 	 * プレイヤーが管理する情報を初期化
 	 * @throws SystemException
 	 */
-	public void initialize() throws SystemException{
+	public void initialize() throws SystemException {
 		this.winnerList = new LinkedList<Player>();
 		this.looserList = new LinkedList<Player>();
 		this.drawerList = new LinkedList<Player>();
 		this.dealer.initialize();
-		for(Player player : this.playerList) {
+		for (Player player : this.playerList) {
 			player.initialize();
 		}
 	}
@@ -108,8 +110,8 @@ this.dealer=dealer;
 	 * 各プレイヤーのベットを行うメソッド
 	 * @throws SystemException
 	 */
-	public void bettingPhase() throws SystemException{
-		for(Player player : this.playerList) {
+	public void bettingPhase() throws SystemException {
+		for (Player player : this.playerList) {
 			System.out.println(MessageProperties.getMessage("blackjack.msg.player.name", player.getName()));
 			player.bet();
 		}
@@ -121,11 +123,11 @@ this.dealer=dealer;
 	 * 各プレイヤー、ディーラーの順に山の上から1枚カードを配るを2回繰り返す
 	 * 最後に各プレイヤー、ディーラーの順に手札を計算する
 	 */
-	public void dealingPhase() throws SystemException{
+	public void dealingPhase() throws SystemException {
 		this.dealer.shuffle();
 
-		for(int i = 0; i < 2; i++) {
-			for(Player player : this.playerList) {
+		for (int i = 0; i < 2; i++) {
+			for (Player player : this.playerList) {
 				player.add(this.dealer.deal());
 			}
 			this.dealer.add(this.dealer.deal());
@@ -142,17 +144,18 @@ this.dealer=dealer;
 	 * プレイヤー全員の行動が終了したら、ディーラーが手持ちのカードの合計が17以上になるまでヒットする
 	 * @throws SystemException
 	 */
-	public void actionPhase() throws SystemException{
+	public void actionPhase() throws SystemException {
 		/*プレイヤーのアクション*/
-		for(Player player : this.playerList) {
+		for (Player player : this.playerList) {
 			this.dealer.checkStatus();
 			player.checkStatus();
 
-			while(!player.getIsBurst() && !player.getIsStand()) {
-				System.out.println(MessageProperties.getMessage("blackjack.msg.player.action",Constants.HIT, Constants.STAND, Constants.SURRENDER));
+			while (!player.getIsBurst() && !player.getIsStand()) {
+				System.out.println(MessageProperties.getMessage("blackjack.msg.player.action", Constants.HIT,
+						Constants.STAND, Constants.SURRENDER));
 				System.out.print(MessageProperties.getMessage("blackjack.msg.player.turn", player.getName()));
 
-				switch(Keyboard.getInt(Constants.HIT, Constants.SURRENDER)) {
+				switch (Keyboard.getInt(Constants.HIT, Constants.SURRENDER)) {
 				case Constants.HIT:
 					player.hit(this.dealer.deal());
 					break;
@@ -164,7 +167,7 @@ this.dealer=dealer;
 					break;
 				}
 
-				if(player.getCanSurrender()) {
+				if (player.getCanSurrender()) {
 					player.setCanSurrender(false);
 				}
 
@@ -173,11 +176,11 @@ this.dealer=dealer;
 		}
 		/*ディーラーのアクション*/
 		System.out.println(MessageProperties.getMessage("blackjack.msg.dealer.name", this.dealer.getName()));
-		while(!this.dealer.getIsBurst() && !this.dealer.getIsStand()) {
-			if(this.dealer.getTotal() < Constants.DEALER_HIT_BORDER) {
+		while (!this.dealer.getIsBurst() && !this.dealer.getIsStand()) {
+			if (this.dealer.getTotal() < Constants.DEALER_HIT_BORDER) {
 				this.dealer.hit(this.dealer.deal());
 				this.dealer.checkStatus();
-			}else {
+			} else {
 				this.dealer.stand();
 			}
 		}
@@ -195,29 +198,29 @@ this.dealer=dealer;
 	 * @throws SystemException
 	 */
 	public void judgePhase() throws SystemException {
-		for(Player player : this.playerList) {
-			if(player.getIsBlackJack() && !this.dealer.getIsBlackJack()){
+		for (Player player : this.playerList) {
+			if (player.getIsBlackJack() && !this.dealer.getIsBlackJack()) {
 				//勝ち
-				player.collect((int)(player.getBettingValue() * Constants.RATE_BLACKJACK));
+				player.collect((int) (player.getBettingValue() * Constants.RATE_BLACKJACK));
 				this.winnerList.add(player);
-			}else if(player.getTotal() > this.dealer.getTotal()) {
+			} else if (player.getTotal() > this.dealer.getTotal()) {
 				//勝ち
-				player.collect((int)(player.getBettingValue() * Constants.RATE_NORMAL));
+				player.collect((int) (player.getBettingValue() * Constants.RATE_NORMAL));
 				this.winnerList.add(player);
-			}else if(!player.getIsBlackJack() && this.dealer.getIsBlackJack()) {
+			} else if (!player.getIsBlackJack() && this.dealer.getIsBlackJack()) {
 				//負け
 				this.looserList.add(player);
-			}else if(player.getTotal() < this.dealer.getTotal()) {
+			} else if (player.getTotal() < this.dealer.getTotal()) {
 				//負け
 				this.looserList.add(player);
-			}else if(player.getIsBurst() && this.dealer.getIsBurst()) {
+			} else if (player.getIsBurst() && this.dealer.getIsBurst()) {
 				//負け
 				this.looserList.add(player);
-			}else if(player.getTotal() == this.dealer.getTotal()) {
+			} else if (player.getTotal() == this.dealer.getTotal()) {
 				//引き分け
 				player.collect(player.getBettingValue());
 				this.drawerList.add(player);
-			}else {
+			} else {
 				throw new SystemException(MessageProperties.getMessage("errpr.stop"));
 			}
 		}
@@ -228,22 +231,22 @@ this.dealer=dealer;
 	 * ディーラーからプレイヤー全員のカードをオープンする
 	 * @throws SystemException
 	 */
-	public void printResult() throws SystemException{
+	public void printResult() throws SystemException {
 		System.out.println(MessageProperties.getMessage("blackjack.result.game", this.gameNumber));
 		this.dealer.open();
 
 		System.out.println(MessageProperties.getMessage("blackjack.winner"));
-		for(Player player : this.winnerList) {
+		for (Player player : this.winnerList) {
 			player.open();
 		}
 
 		System.out.println(MessageProperties.getMessage("blackjack.looser"));
-		for(Player player : this.looserList) {
+		for (Player player : this.looserList) {
 			player.open();
 		}
 
 		System.out.println(MessageProperties.getMessage("blackjack.drawer"));
-		for(Player player : this.drawerList) {
+		for (Player player : this.drawerList) {
 			player.open();
 		}
 	}
@@ -254,7 +257,7 @@ this.dealer=dealer;
 	 * @return boolean
 	 * @throws SystemException
 	 */
-	public boolean hasContinued() throws SystemException{
+	public boolean hasContinued() throws SystemException {
 		this.gameNumber++;
 		System.out.println(MessageProperties.getMessage("blackjack.continue", Constants.CONTINUE, Constants.EXIT));
 		return (Keyboard.getInt(Constants.CONTINUE, Constants.EXIT) == 1);
