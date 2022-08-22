@@ -40,7 +40,7 @@ public class BlackJack {
 				if(!bj.hasContinued()) {
 					System.out.println(MessageProperties.getMessage("blackjack.end"));
 					for(Player player : bj.playerList) {
-						int result = player.getTotalChip() - player.getDept() - Constants.INITIAL_CHIP_TOTAL;
+						int result = player.getTotalChip() - player.getDebt() - Constants.INITIAL_CHIP_TOTAL;
 						System.out.println(MessageProperties.getMessage("blackjack.result.chip", player.getName(), (result > 0 ? "+" : result < 0 ? "-" : "+-")+(result)));
 					}
 					break;
@@ -67,11 +67,7 @@ public class BlackJack {
 	 * @throws SystemException
 	 */
 	public void createPlayer() throws SystemException{
-		//Dealerクラス担当者変数箇所
-		//ここから
-
-		//ここまで
-
+		this.dealer = new Dealer();
 		this.playerList = new ArrayList<Player>();
 
 		System.out.println(MessageProperties.getMessage("blackjack.input", Constants.MIN_PLAYER, Constants.MAX_PLAYER));
@@ -79,10 +75,7 @@ public class BlackJack {
 		int number = Keyboard.getInt(Constants.MIN_PLAYER,Constants.MAX_PLAYER);
 
 		for(int i = 0; i < number ; i++) {
-		//Playerクラス担当者変数箇所
-		//ここから
-
-		//ここまで
+			this.playerList.add(new Player("player"+(i+1), Constants.INITIAL_CHIP_TOTAL));
 		}
 	}
 
@@ -254,8 +247,10 @@ public class BlackJack {
 	 * @throws SystemException
 	 */
 	public boolean hasContinued() throws SystemException{
-		this.gameNumber++;
-		System.out.println(MessageProperties.getMessage("blackjack.continue", Constants.CONTINUE, Constants.EXIT));
-		return (Keyboard.getInt(Constants.CONTINUE, Constants.EXIT) == 1);
+		//プレイヤー担当、ディーラー担当の両方が編集する
+		//(意図的にコンフリクトを発生させコンフリクトを解消してマージする)
+		//ここから
+
+		//ここまで
 	}
 }

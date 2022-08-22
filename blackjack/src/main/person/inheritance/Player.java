@@ -19,8 +19,8 @@ public class Player extends Person{
 	/**
 	 * プレイヤー初期化メソッド
 	 * 手持ちのカードを無くし、合計、ベットを0、フラグを初期化
-	 * 手持ちのチップが最低掛け金より小さい場合はゲームが続行できないのでConstants.DEPT_VALUEの額を借金をする
-	 * 手持ちのチップがConstants.REPAYMENT_BORDERより多い場合は、Constants.DEPT_VALUEの額を返済する
+	 * 手持ちのチップが最低掛け金より小さい場合はゲームが続行できないのでConstants.DEBT_VALUEの額を借金をする
+	 * 手持ちのチップがConstants.REPAYMENT_BORDERより多い場合は、Constants.DEBT_VALUEの額を返済する
 	 */
 	@Override
 	public void initialize() {
@@ -87,7 +87,7 @@ public class Player extends Person{
 		return this.totalChip;
 	}
 
-	public int getDept() {
+	public int getDebt() {
 		return this.debt;
 	}
 

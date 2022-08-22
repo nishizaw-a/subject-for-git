@@ -20,7 +20,7 @@ public class Constants {
 	public static final int MAX_BET_VALUE = 1000;//最大ベット数
 	public static final int MIN_BET_VALUE = 1;//最小ベット数
 	public static final int INITIAL_CHIP_TOTAL = 1000;//初期所持チップ数
-	public static final int DEPT_VALUE = 1000;//最小借入チップ数
+	public static final int DEBT_VALUE = 1000;//最小借入チップ数
 	public static final int REPAYMENT_BORDER = 1500;//返済ボーダー
 	public static final double RATE_BLACKJACK = 2.5; //ブラックジャック時のレート
 	public static final double RATE_NORMAL = 2.0; //勝利時のレート
