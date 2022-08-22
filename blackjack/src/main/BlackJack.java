@@ -82,6 +82,7 @@ public class BlackJack {
 		//Playerクラス担当者変数箇所
 		//ここから
 
+		playerList.add(new Player("player" +(i+1),Constants.INITIAL_CHIP_TOTAL));
 		//ここまで
 		}
 	}
