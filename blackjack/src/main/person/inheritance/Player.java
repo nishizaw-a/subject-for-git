@@ -40,7 +40,7 @@ public class Player extends Person {
 		if (totalChip < Constants.MIN_BET_VALUE) {
 			totalChip += Constants.DEPT_VALUE;
 			debt += Constants.DEPT_VALUE;
-		} else if (totalChip < Constants.REPAYMENT_BORDER || debt >= Constants.DEPT_VALUE) {
+		} else if ((totalChip > Constants.REPAYMENT_BORDER) && (debt >= Constants.DEPT_VALUE)) {
 			totalChip -= Constants.DEPT_VALUE;
 			debt -= Constants.DEPT_VALUE;
 		} else {
@@ -84,14 +84,14 @@ public class Player extends Person {
 				int num = super.getTotal();
 				str3 = String.valueOf(num);
 			}
-			String str4 = String.valueOf(bettingValue);
-			String str5 = String.valueOf(totalChip);
-			String str6 = String.valueOf(debt);
-
-			System.out.println(
-					MessageProperties.getMessage("blackjack.msg.player.info", str1, str2, str3, str4, str5, str6));
-
 		}
+		String str4 = String.valueOf(bettingValue);
+		String str5 = String.valueOf(totalChip);
+		String str6 = String.valueOf(debt);
+
+		System.out.println(
+				MessageProperties.getMessage("blackjack.msg.player.info", str1, str2, str3, str4, str5, str6));
+
 		//ここまで
 	}
 
@@ -104,14 +104,14 @@ public class Player extends Person {
 		//Playerクラス担当者変数箇所
 		//ここから
 
-		System.out.println(MessageProperties.getMessage("blackjack.msg.player.info.total.chip", totalChip));
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.info.total.chip",totalChip));
 		int num;
 		if (totalChip > Constants.MAX_BET_VALUE) {
 			num = Constants.MAX_BET_VALUE;
 		} else {
 			num = totalChip;
 		}
-		System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet", num));
+		System.out.println(MessageProperties.getMessage("blackjack.msg.player.bet",1, num));
 
 		String str = super.getName();
 		System.out.println(MessageProperties.getMessage("blackjack.msg.player.turn", str));
@@ -142,7 +142,7 @@ public class Player extends Person {
 		boolean bln = super.getIsBurst();
 		boolean bln2 = super.getIsStand();
 
-		if (getIsBurst() == false || getIsStand() == false) {
+		if (getIsBurst() == false && getIsStand() == false) {
 
 			if (canSurrender == true) {
 				System.out.println(MessageProperties.getMessage("blackjack.surrender"));

@@ -1,5 +1,6 @@
 package main.person.inheritance;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,10 +60,13 @@ public class Dealer extends Person {
 	private void createDeck() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-		List<Card> list = deck;
+		List<Card> list = new ArrayList<Card>();
+		deck=list;
 		for (int i = 0; i < Constants.SUIT_LIST.size(); i++) {
-			Card card = new Card(i, Constants.SUIT_LIST.get(0));
-			list.add(card);
+			for(int j=1;j<=13;j++) {
+			Card card = new Card(j, Constants.SUIT_LIST.get(i));
+			deck.add(card);
+			}
 		}
 
 		//ここまで
