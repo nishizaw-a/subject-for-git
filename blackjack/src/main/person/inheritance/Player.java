@@ -1,6 +1,7 @@
 package main.person.inheritance;
 
 import main.person.Person;
+import main.util.constants.Constants;
 import main.util.exception.SystemException;
 
 public class Player extends Person{
@@ -26,7 +27,17 @@ public class Player extends Person{
 	public void initialize() {
 		//Playerクラス担当者変数箇所
 		//ここから
+		this.bettingValue = 0;
+		this.canSurrender = true;
+		super.initialize();
 
+		if(this.totalChip < Constants.MIN_BET_VALUE) {
+			this.totalChip += Constants.DEBT_VALUE;
+			this.debt += Constants.DEBT_VALUE;
+		}else if((this.totalChip > Constants.REPAYMENT_BORDER) && (this.debt >= Constants.DEBT_VALUE)) {
+			this.totalChip -= Constants.DEBT_VALUE;
+			this.debt -= Constants.DEBT_VALUE;
+		}
 		//ここまで
 	}
 
