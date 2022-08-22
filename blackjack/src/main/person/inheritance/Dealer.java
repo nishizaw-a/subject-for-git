@@ -84,7 +84,9 @@ public class Dealer extends Person{
 	public Card deal() {
 		//Dealerクラス担当者変数箇所
 		//ここから
-
+		Card card = this.deck.get(0);
+		this.deck.remove(card);
+		return card;
 		//ここまで
 	}
 }
