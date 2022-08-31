@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/main.css}">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/list.css}">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/button.css}">
+
+<title>施設情報一覧</title>
+</head>
+<body>
+
+
+	<div th:replace="util/fragments::header_block(|施設情報一覧画面	|)"></div>
+	<div id="container">
+
+		<div align="center">
+			<a th:href="@{/facility/add}" class="btn-animation-02"><span>新規登録</span></a>
+			<a th:href="@{/menu}" class="btn-animation-menu"><span>メニューへ戻る</span></a>
+		</div>
+		<table class="bottom">
+			<tr>
+				<th>ID</th>
+				<th>施設名</th>
+				<th>施設種別</th>
+				<th>定員</th>
+			</tr>
+			<tr th:each="facility, facilityStatus : ${facilityListForm}">
+				<td th:text="${facility.facilityId}"></td>
+
+				<td class="name"><a th:text="${facility.name}"
+					th:href="@{/facility/detail/{facilityId}(facilityId=${facility.facilityId})}">system</a></td>
+
+				<td th:text="${facility.facilityTypeForm.name}">システム</td>
+
+				<td th:text="${facility.capacity}">システム</td>
+
+
+			</tr>
+
+		</table>
+	</div>
+	<!-- container -->
+	<div th:replace="util/fragments::footer_block()"></div>
+</body>
+</html>

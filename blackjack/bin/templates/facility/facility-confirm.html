@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/main.css}">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/confirm.css}">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/button.css}">
+
+<title th:text="'施設'+${facilityConfirmForm.btnName}+'内容確認'"></title>
+</head>
+<body>
+
+	<div
+		th:replace="util/fragments::header_block(|施設${facilityConfirmForm.btnName}内容確認画面|)"></div>
+	<!-- 	<div class="completion-message"><div>施設情報管理</div></div> -->
+
+	<div class="completion-message">以下の内容でよろしいですか？</div>
+	<div id="container">
+
+
+		<form th:action="@{/facility/complete}" name="confirm" method="POST"
+			th:object="${facilityConfirmForm.facilityForm}">
+
+			<table class="confirm">
+
+
+
+				<tr>
+					<th>施設名</th>
+					<td><input type="hidden" th:field="*{name}"> <span
+						th:text="*{name}"></span></td>
+				</tr>
+
+				<tr>
+					<th>施設種別</th>
+					<td><th:block
+							th:each="facilityType, Status : ${facilityConfirmForm.facilityTypeFormList}">
+							<th:block
+								th:if="${facilityType.facilityTypeId==facilityConfirmForm.facilityForm.facilityTypeForm.facilityTypeId}">
+								<input type="hidden"
+									th:field="*{facilityTypeForm.facilityTypeId}"
+									th:text="${facilityType.name}">
+							</th:block>
+
+						</th:block></td>
+
+				</tr>
+
+
+
+				<tr>
+					<th>定員</th>
+					<td><input type="hidden" th:field="*{capacity}"> <span
+						th:text="*{capacity}"></span></td>
+				</tr>
+
+
+
+			</table>
+
+			<div class="bottom" align="center">
+				<button
+					th:class="'btn-animation-' + ${facilityConfirmForm.btnAction}"
+					id="confirm" th:name="${facilityConfirmForm.btnAction}">
+					<span th:text=${facilityConfirmForm.btnName}></span>
+				</button>
+				<a class="btn-animation-menu" th:attr="onClick='history.back()'">
+					<span>戻る</span>
+				</a>
+
+
+			</div>
+		</form>
+
+
+	</div>
+	<!-- container -->
+	<div th:replace="util/fragments::footer_block()"></div>
+
+</body>
+</html>

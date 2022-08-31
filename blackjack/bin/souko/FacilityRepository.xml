@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="jp.co.ginga.infra.repository.facility.FacilityRepository">
+	<resultMap
+		type="jp.co.ginga.infra.repository.facility.FacilityEntity"
+		id="facility">
+		<id property="facilityId" column="facility_id" />
+		<result property="name" column="name" />
+		<result property="capacity" column="capacity" />
+
+		<result property="insertDate" column="insert_date" />
+
+		<result property="updateDate" column="update_date" />
+
+
+		<association property="facilityTypeEntity"
+			javaType="jp.co.ginga.infra.repository.facilityType.FacilityTypeEntity">
+			<result property="facilityTypeId" column="facility_type_id" />
+			<result property="name" column="typeName" />
+		</association>
+
+	</resultMap>
+	<select id="findAll" resultMap="facility">
+		select
+		f.facility_id
+		, f.name
+		,f.capacity
+		,t.name as typeName
+
+
+		from
+		m_facility f left outer join
+		m_facility_type t
+		on f.facility_type_id=t.facility_type_id
+		order by
+		facility_id
+	</select>
+
+	<select id="findByFacilityId" resultMap="facility">
+		select
+		f.facility_id
+		,
+		f.name
+		,f.capacity
+		,f.insert_date
+		,f.update_date
+		,t.name as typename
+		,t.facility_type_id
+
+		from public.m_facility f left outer join
+		public.m_facility_type t
+		on f.facility_type_id=t.facility_type_id
+		where
+		facility_id=#{facilityId};
+	</select>
+
+	<select id="findByFacilityTypeId" resultMap="facility">
+		select
+		f.facility_id
+		, f.name
+		,f.capacity
+		,f.insert_date
+		,f.update_date
+		,t.name as typename
+		,t.facility_type_id
+
+
+		from public.m_facility f left outer join
+		public.m_facility_type t
+		on f.facility_type_id=t.facility_type_id
+		where
+		f.facility_type_id=#{facilityTypeEntity.facilityTypeId};
+
+	</select>
+
+	<select id="findByName" resultMap="facility">
+		select
+		f.facility_id
+		, f.name
+		,f.capacity
+		,f.insert_date
+		,f.update_date
+		,t.name as typename
+		,t.facility_type_id
+
+
+		from public.m_facility f left outer join
+		public.m_facility_type t
+		on f.facility_type_id=t.facility_type_id
+		where
+		f.name=#{name};
+
+	</select>
+
+	<insert id="insert">
+		insert into m_facility (
+		<if test="facilityId!=0"  >
+			facility_id,
+		</if>
+		name
+		,capacity
+		,
+		insert_date
+		,facility_type_id
+
+		)
+		values (
+		<if test="facilityId!=0">
+		#{facilityId},
+		</if>
+		#{name}
+		,
+		#{capacity}
+		,NOW()
+		,#{facilityTypeEntity.facilityTypeId}
+		);
+
+
+	</insert>
+	<update id="update">
+		update m_facility set
+		<if test="name != null">
+			name=#{name},
+		</if>
+		<if test="capacity != null">
+			capacity=#{capacity},
+		</if>
+		update_date=NOW(),
+		<if test="facilityTypeEntity.facilityTypeId != null">
+			facility_type_id=#{facilityTypeEntity.facilityTypeId}
+		</if>
+
+		where facility_id=#{facilityId}
+
+	</update>
+
+
+
+	<delete id="delete">
+		delete from m_facility
+		where facility_id =
+		#{facilityId};
+	</delete>
+
+</mapper>

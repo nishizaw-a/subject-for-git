@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/main.css}">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/add.css}">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/button.css}">
+
+<!-- jQueryの読み込み -->
+<script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+
+<!-- jQueryUiの読み込み -->
+<script th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+<link rel="stylesheet"
+	th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+
+<title>施設登録</title>
+</head>
+<body>
+	<script type="text/javascript" th:src="@{/js/facility/facilityType.js}"></script>
+
+	<div th:replace="util/fragments::header_block(|施設登録画面|)"></div>
+	<div id="container">
+
+		<form th:action="@{/facility/confirm}" name="add" method="POST"
+			th:object="${facilityAddForm.facilityForm}">
+
+			<div class="system-msg">
+				<span th:errors="${facilityAddForm.sysMsg}">システムメッセージ</span>
+			</div>
+
+			<div id="hiddenData"
+				th:each="facility, facilityStatus : ${facilityListForm}">
+				<input type="hidden" th:class="facility"
+					th:value="${facilityStatus.count}">
+			</div>
+			<div id="hiddenData"
+				th:each="facilityType, facilityTypeStatus : ${facilityAddForm.facilityTypeFormList}">
+				<input type="hidden" th:class="facilityType"
+					th:value="${facilityType.facilityTypeId}">
+			</div>
+
+
+
+			<table class="facility-add">
+
+				<tr>
+					<th>施設名<span class="system-msg">※</span></th>
+					<td><span th:if="${#fields.hasErrors('name')}"
+						th:errors="*{name}" class="system-msg">haserror</span> <input
+						type="text" th:field="*{name}"></td>
+				</tr>
+
+
+
+				<tr>
+					<th>施設種別<span class="system-msg">※</span></th>
+					<td><th:block
+							th:each="facilityType,status:${facilityAddForm.facilityTypeFormList}">
+							<input type="radio" th:field="*{facilityTypeForm.facilityTypeId}"
+								th:value="${facilityType.facilityTypeId}"
+								th:text="${facilityType.name}" />
+						</th:block></td>
+				</tr>
+
+				<tr>
+					<th>定員<span class="system-msg">※</span></th>
+					<td><span th:if="${#fields.hasErrors('capacity')}"
+						th:errors="*{capacity}" class="system-msg">haserror</span> <input
+						type="text" th:field="*{capacity}"></td>
+				</tr>
+
+
+
+			</table>
+
+			<div class="bottom" align="center">
+				<button class="btn-animation-add" id="confirm" name="add">
+					<span>登録</span>
+				</button>
+				<a class="btn-animation-menu"
+					onClick="location.href='/facility/list'"><span>戻る</span></a>
+			</div>
+
+
+		</form>
+
+	</div>
+	<!-- container -->
+	<div th:replace="util/fragments::footer_block()"></div>
+
+	<!-- jsファイルの読み込み -->
+	<script type="text/javascript"
+		th:src="@{/js/facility/facilityRetype.js}"></script>
+
+</body>
+</html>

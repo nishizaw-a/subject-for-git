@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="all"
+	href="../css/main.css">
+<link rel="stylesheet" type="text/css" media="all"
+	href="../css/button.css">
+<link rel="stylesheet" type="text/css" media="all"
+	href="../css/menu/menu.css">
+<!-- jQueryの読み込み -->
+<script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- jQueryUiの読み込み -->
+<script src="../webjars/jquery-ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet"
+	href="../webjars/jquery-ui/1.12.1/jquery-ui.min.css">
+
+<title>予約施設一覧</title>
+</head>
+<body>
+	<script type="text/javascript"
+		th:src="@{/js/facilityReservation/facilityReservationList.js}"></script>
+
+	<div th:replace="util/fragments::header_block(|予約施設一覧画面	|)"></div>
+
+	<div id="container">
+
+		<div class="cp_ipselect cp_sl01">
+			<select id="type">
+				<option value="0">すべて</option>
+
+				<th:block
+					th:each="facilityType, facilityStatus : ${facilityTypeListForm}">
+
+					<option th:value="${facilityType.facilityTypeId}"
+						th:text="${facilityType.name}">システム</option>
+
+				</th:block>
+
+			</select>
+		</div>
+
+
+		<div id="facility" class="col_3">
+
+			<th:block th:each="facility, facilityStatus : ${facilityListForm}">
+
+				<div class="r-col ">
+					<a class="element" th:text="${facility.name}"
+						th:href="@{/facilityreservation/calender/{facilityId}(facilityId=${facility.facilityId})}">システム</a>
+					<p class="element" th:text="|定員${facility.capacity}人|"
+						th:href="@{/facilityreservation/calender/{facilityId}(facilityId=${facility.facilityId})}">システム</p>
+				</div>
+
+
+
+			</th:block>
+		</div>
+
+		<div class="bottom" align="center">
+			<a href="../menu" class="btn-animation-menu"><span>メニューへ戻る</span></a>
+		</div>
+
+	</div>
+
+
+	<div id="footer">
+		<p>© 2020 ginga software</p>
+	</div>
+
+
+	<!-- jsファイルの読み込み -->
+	<script></script>
+
+</body>
+</html>
