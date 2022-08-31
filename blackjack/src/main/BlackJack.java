@@ -12,11 +12,41 @@ import main.util.keyboard.Keyboard;
 import main.util.properties.MessageProperties;
 
 public class BlackJack {
+	/**
+	 * 勝者リスト
+	 */
 	private List<Player> winnerList;
+
+	/**
+	 * 敗者リスト
+	 */
 	private List<Player> looserList;
+
+	/**
+	 * 引き分けリスト
+	 */
 	private List<Player> drawerList;
+
+	/**
+	 * 参加者リスト
+	 */
 	private List<Player> playerList;
+
+	/**
+	 * スプリット時管理リスト(action用)
+	 */
+	private List<Player> sList;
+
+	private List<Player> addList;
+
+	/**
+	 * ディーラー
+	 */
 	private Dealer dealer;
+
+	/**
+	 * ゲーム数
+	 */
 	private int gameNumber;
 
 	public static void main(String[] args) {
@@ -101,6 +131,8 @@ public class BlackJack {
 		this.winnerList = new LinkedList<Player>();
 		this.looserList = new LinkedList<Player>();
 		this.drawerList = new LinkedList<Player>();
+		this.sList = new LinkedList<Player>();
+		this.addList = new LinkedList<Player>();
 		this.dealer.initialize();
 		for (Player player : this.playerList) {
 			player.initialize();
@@ -114,6 +146,8 @@ public class BlackJack {
 	public void bettingPhase() throws SystemException {
 		for (Player player : this.playerList) {
 			System.out.println(MessageProperties.getMessage("blackjack.msg.player.name", player.getName()));
+
+			//プレイヤーベット処理
 			player.bet();
 		}
 	}
@@ -129,8 +163,14 @@ public class BlackJack {
 
 		for (int i = 0; i < 2; i++) {
 			for (Player player : this.playerList) {
+				//test中
+				//player.add(this.dealer.dealTest(i));
+
+				//プレイヤーカード取得処理
 				player.add(this.dealer.deal());
 			}
+
+			//ディーラーカード取得処理
 			this.dealer.add(this.dealer.deal());
 		}
 	}
@@ -148,31 +188,126 @@ public class BlackJack {
 	public void actionPhase() throws SystemException {
 		/*プレイヤーのアクション*/
 		for (Player player : this.playerList) {
+
+			//プレイヤー・ディーラー情報取得処理
 			this.dealer.checkStatus();
 			player.checkStatus();
 
-			while (!player.getIsBurst() && !player.getIsStand()) {
-				System.out.println(MessageProperties.getMessage("blackjack.msg.player.action", Constants.HIT,
-						Constants.STAND, Constants.SURRENDER));
-				System.out.print(MessageProperties.getMessage("blackjack.msg.player.turn", player.getName()));
+			while (true) {
+				if (player.getIsSplit()) {
 
-				switch (Keyboard.getInt(Constants.HIT, Constants.SURRENDER)) {
-				case Constants.HIT:
-					player.hit(this.dealer.deal());
-					break;
-				case Constants.STAND:
-					player.stand();
-					break;
-				case Constants.SURRENDER:
-					player.surrender();
-					break;
+					//スプリット時の行動処理リスト作成
+					this.sList.clear();
+					this.sList.add(player);
+					this.sList.add(player.getSplitList().get(0));
+
+					int count = 0;
+
+					for (Player spPlayer : this.sList) {
+
+						//バースト判定＆スタンド判定チェック
+						if (spPlayer.getIsBurst() == true || spPlayer.getIsStand() == true) {
+							count++;
+							continue;
+						}
+						player.count();
+
+						//ダブルダウン可能時処理分岐
+						if (spPlayer.getCount() == 1) {
+							System.out.println(
+									MessageProperties.getMessage("blackjack.msg.player.action.double", Constants.HIT,
+											Constants.STAND, Constants.SURRENDER, Constants.DOUBLE_DOWN));
+						} else {
+
+							System.out
+									.println(MessageProperties.getMessage("blackjack.msg.player.action", Constants.HIT,
+											Constants.STAND, Constants.SURRENDER));
+						}
+						System.out.print(MessageProperties.getMessage("blackjack.msg.player.turn", spPlayer.getName()));
+
+						switch (Keyboard.getInt(Constants.HIT, Constants.DOUBLE_DOWN)) {
+						case Constants.HIT:
+							spPlayer.hit(this.dealer.deal());
+							break;
+						case Constants.STAND:
+							spPlayer.stand();
+							break;
+						case Constants.SURRENDER:
+							spPlayer.surrender();
+							break;
+						case Constants.DOUBLE_DOWN:
+							spPlayer.doubleDown(this.dealer.deal());
+							break;
+						}
+
+						spPlayer.checkStatus();
+
+					}
+
+					//スプリットプレイヤー行動終了チェック
+					if (count == sList.size()) {
+						break;
+					}
+
+				} else {
+					player.count();
+
+					//スプリット可能時処理分岐
+					if (player.getHand().get(0).getNumber() == player.getHand().get(1).getNumber()
+							|| (player.getHand().get(0).getNumber() >= 10
+									&& player.getHand().get(1).getNumber() >= 10)) {
+						System.out.println(
+								MessageProperties.getMessage("blackjack.msg.player.action.split", Constants.HIT,
+										Constants.STAND, Constants.SURRENDER, Constants.SPLIT, Constants.DOUBLE_DOWN));
+
+						//ダブルダウン可能時処理分岐
+					} else if (player.getCount() == 1) {
+						System.out.println(
+								MessageProperties.getMessage("blackjack.msg.player.action.double", Constants.HIT,
+										Constants.STAND, Constants.SURRENDER, Constants.DOUBLE_DOWN));
+					} else {
+
+						System.out.println(MessageProperties.getMessage("blackjack.msg.player.action", Constants.HIT,
+								Constants.STAND, Constants.SURRENDER));
+					}
+					System.out.print(MessageProperties.getMessage("blackjack.msg.player.turn", player.getName()));
+
+					switch (Keyboard.getInt(Constants.HIT, Constants.DOUBLE_DOWN)) {
+					case Constants.HIT:
+						player.hit(this.dealer.deal());
+						break;
+					case Constants.STAND:
+						player.stand();
+						break;
+					case Constants.SURRENDER:
+						player.surrender();
+						break;
+					case Constants.SPLIT:
+						player.split();
+						break;
+					case Constants.DOUBLE_DOWN:
+						player.doubleDown(this.dealer.deal());
+						break;
+					}
+
+					if (player.getCanSurrender()) {
+						player.setCanSurrender(false);
+					}
+
+					//スプリット時プレイヤー情報取得処理
+					if (player.getIsSplit()) {
+						player.checkStatus();
+						player.getSplitList().get(0).checkStatus();
+
+					} else {
+
+						player.checkStatus();
+					}
+
+					if (player.getIsBurst() == true || player.getIsStand() == true) {
+						break;
+					}
 				}
-
-				if (player.getCanSurrender()) {
-					player.setCanSurrender(false);
-				}
-
-				player.checkStatus();
 			}
 		}
 		/*ディーラーのアクション*/
@@ -199,32 +334,145 @@ public class BlackJack {
 	 * @throws SystemException
 	 */
 	public void judgePhase() throws SystemException {
+
+		//ジャッジ用リスト作成処理
 		for (Player player : this.playerList) {
+			if (!player.getSplitList().isEmpty()) {
+				addList.add(player.getSplitList().get(0));
+			}
+			addList.add(player);
+
+		}
+
+		for (Player player : this.addList) {
+
+			//ブラックジャック勝利
 			if (player.getIsBlackJack() && !this.dealer.getIsBlackJack()) {
-				//勝ち
-				player.collect((int) (player.getBettingValue() * Constants.RATE_BLACKJACK));
+
+				//プレイヤー獲得チップ処理
+				player.setGettinglChip((int) (player.getBettingValue() * Constants.RATE_BLACKJACK));
+
 				this.winnerList.add(player);
+
+				//ノーマル勝利
 			} else if (player.getTotal() > this.dealer.getTotal()) {
-				//勝ち
-				player.collect((int) (player.getBettingValue() * Constants.RATE_NORMAL));
+
+				//プレイヤー獲得チップ処理
+				player.setGettinglChip((int) (player.getBettingValue() * Constants.RATE_NORMAL));
+
 				this.winnerList.add(player);
-			} else if (!player.getIsBlackJack() && this.dealer.getIsBlackJack()) {
-				//負け
+
+				//敗北
+			} else if (!player.getIsBlackJack() && this.dealer.getIsBlackJack()
+					|| player.getTotal() < this.dealer.getTotal()
+					|| player.getIsBurst() && this.dealer.getIsBurst()) {
+
 				this.looserList.add(player);
-			} else if (player.getTotal() < this.dealer.getTotal()) {
-				//負け
-				this.looserList.add(player);
-			} else if (player.getIsBurst() && this.dealer.getIsBurst()) {
-				//負け
-				this.looserList.add(player);
-			} else if (player.getTotal() == this.dealer.getTotal()) {
+
 				//引き分け
-				player.collect(player.getBettingValue());
+			} else if (player.getTotal() == this.dealer.getTotal()) {
+
+				//プレイヤー獲得チップ処理
+				player.setGettinglChip(player.getBettingValue());
+
 				this.drawerList.add(player);
+
 			} else {
 				throw new SystemException(MessageProperties.getMessage("errpr.stop"));
 			}
+
+			//スプリットを行ったかの判定チェック
+			if (!player.getSplitList().isEmpty()) {
+
+				//合計チップ処理
+				player.collect(player.getGettingChip() + player.getSplitList().get(0).getGettingChip());
+			} else {
+
+				//合計チップ処理
+				player.collect(player.getGettingChip());
+
+			}
 		}
+
+		/*	for (Player player : this.playerList) {
+
+				//ブラックジャック勝利
+				if (player.getIsBlackJack() && !this.dealer.getIsBlackJack()) {
+
+					//プレイヤーチップ加算処理
+					player.collect((int) (player.getBettingValue() * Constants.RATE_BLACKJACK));
+
+					this.winnerList.add(player);
+
+					//ノーマル勝利
+				} else if (player.getTotal() > this.dealer.getTotal()) {
+
+					//プレイヤーチップ加算処理
+					player.collect((int) (player.getBettingValue() * Constants.RATE_NORMAL));
+
+					this.winnerList.add(player);
+
+					//敗北
+				} else if (!player.getIsBlackJack() && this.dealer.getIsBlackJack()
+						|| player.getTotal() < this.dealer.getTotal()
+						|| player.getIsBurst() && this.dealer.getIsBurst()) {
+
+					this.looserList.add(player);
+
+					//引き分け
+				} else if (player.getTotal() == this.dealer.getTotal()) {
+
+					//プレイヤーチップ加算処理
+					player.collect(player.getBettingValue());
+
+					this.drawerList.add(player);
+
+				} else {
+					throw new SystemException(MessageProperties.getMessage("errpr.stop"));
+				}
+
+				//スプリットを行ったかの判定チェック
+				if (!player.getSplitList().isEmpty()) {
+					Player sp = player.getSplitList().get(0);
+
+					//ブラックジャック勝利
+					if (sp.getIsBlackJack() && !this.dealer.getIsBlackJack()) {
+
+						//プレイヤーチップ加算処理
+						player.collect((int) (sp.getBettingValue() * Constants.RATE_BLACKJACK));
+
+
+
+						this.winnerList.add(sp);
+
+						//ノーマル勝利
+					} else if (sp.getTotal() > this.dealer.getTotal()) {
+
+						//プレイヤーチップ加算処理
+						player.collect((int) (sp.getBettingValue() * Constants.RATE_NORMAL));
+
+						this.winnerList.add(sp);
+
+						//敗北
+					} else if (!sp.getIsBlackJack() && this.dealer.getIsBlackJack()
+							|| sp.getTotal() < this.dealer.getTotal()
+							|| sp.getIsBurst() && this.dealer.getIsBurst()) {
+
+						this.looserList.add(sp);
+
+						//引き分け
+					} else if (sp.getTotal() == this.dealer.getTotal()) {
+
+						//プレイヤーチップ加算処理
+						player.collect(sp.getBettingValue());
+
+						this.drawerList.add(sp);
+
+					} else {
+						throw new SystemException(MessageProperties.getMessage("errpr.stop"));
+					}
+				}
+			} */
 	}
 
 	/**
@@ -236,6 +484,7 @@ public class BlackJack {
 		System.out.println(MessageProperties.getMessage("blackjack.result.game", this.gameNumber));
 		this.dealer.open();
 
+		//各リスト表示処理
 		System.out.println(MessageProperties.getMessage("blackjack.winner"));
 		for (Player player : this.winnerList) {
 			player.open();

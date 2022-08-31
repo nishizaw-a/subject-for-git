@@ -11,7 +11,10 @@ import main.util.exception.SystemException;
 import main.util.properties.MessageProperties;
 
 public class Dealer extends Person {
-	private List<Card> deck;//山札
+	/**
+	 * 山札
+	 */
+	private List<Card> deck;
 
 	public Dealer() throws SystemException {
 		super(MessageProperties.getMessage("blackjack.dealer.name"));
@@ -40,11 +43,15 @@ public class Dealer extends Person {
 	public void checkStatus() throws SystemException {
 		//Dealerクラス担当者変数箇所
 		//ここから
-		super.updateStatus();
-		List<Card> list = super.getHand();
-		boolean check = super.getIsStand();
+		
+		//点数処理
+		updateStatus();
+		
+		
+		List<Card> list = getHand();
+		boolean check = getIsStand();
 
-		if (list.size() == 2 && super.getIsStand() == false) {
+		if (list.size() == 2 && getIsStand() == false) {
 			String name = getName();
 			String str = list.get(0).toString();
 			System.out.println(MessageProperties.getMessage("blackjack.msg.dealer.info.init", name, str));
@@ -62,7 +69,9 @@ public class Dealer extends Person {
 		this.deck = new ArrayList<Card>();
 
 		for (int i = 0; i < Constants.SUIT_LIST.size(); i++) {
-			for (int j = 0; j < 13; j++) {
+			for (int j = 1; j < 14; j++) {
+				
+				//カード・デッキ作成処理
 				Card card = new Card(j, Constants.SUIT_LIST.get(i));
 				this.deck.add(card);
 			}
@@ -90,9 +99,23 @@ public class Dealer extends Person {
 	public Card deal() {
 		//Dealerクラス担当者変数箇所
 		//ここから
+
+		//デッキの一番上からカード取得
 		Card card = this.deck.get(0);
+
+		//デッキからカード削除
 		deck.remove(card);
 		return card;
 		//ここまで
 	}
+
+	public Card dealTest(int i) {
+		//Dealerクラス担当者変数箇所
+		//ここから
+		Card card = this.deck.get(i * 11);
+		deck.remove(card);
+		return card;
+		//ここまで
+	}
+
 }
